@@ -16,7 +16,7 @@ void taskReadLum(void *pvParameters);
 
 void app_main() {
     xTaskCreate(taskReadLum, "task_lum", 2048, NULL, 1, NULL);
-    xTaskCreate(taskDisplay, "task_display", 2048, NULL, 1, NULL);
+    xTaskCreate(taskDisplay, "task_display", 3000, NULL, 1, NULL);
     ESP_LOGI(TAG, "Iniciando...");
     initNvs();
     initWifi();
@@ -32,6 +32,7 @@ void taskReadLum(void *pvParameters) {
     int val;
     loop {
         val = adc1_get_raw(PIN_LUM);
+        // val = esp_random()/10000000; // Para testes
         xQueueSend(bufferLuminosity, &val, pdMS_TO_TICKS(0));
         delay(500);
     }

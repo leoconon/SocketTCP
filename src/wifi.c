@@ -1,11 +1,9 @@
 #include <wifi.h>
+#include <global.h>
 
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT BIT1
-#define WIFI_USER "Eliete"
-#define WIFI_PASS "#elisnon13"
+#define WIFI_USER "NetVirtua 801"
+#define WIFI_PASS "sg969100"
 
-EventGroupHandle_t wifiEventGroup;
 static const char *TAG = "wifi";
 
 void initNvs();

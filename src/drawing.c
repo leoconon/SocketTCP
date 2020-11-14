@@ -1,9 +1,11 @@
 #include "drawing.h"
 #include "utils.h"
 #include "global.h"
+#include <wifi.h>
 
 int historic[MAX_WIDTH];
 u8g2_t u8g2;
+int wifiState = 0;
 
 void taskDisplay(void *pvParameters) {
     u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
@@ -48,8 +50,28 @@ void taskDisplay(void *pvParameters) {
         }
         sunBigger = !sunBigger;
         printValue(&u8g2, readValue);
+        drawWifi(&u8g2);
         u8g2_SendBuffer(&u8g2);
         isFirstIteraction = false;
+    }
+}
+
+void drawWifi(u8g2_t *u8g2) {
+    EventBits_t flags = xEventGroupGetBits(wifiEventGroup);
+    int newWifiState;
+    if (flags & WIFI_CONNECTED_BIT) {
+        newWifiState = CONNECTED_CHAR_HEX;
+    } else if (flags & WIFI_FAIL_BIT) {
+        newWifiState = DISCONNECTED_CHAR_HEX;
+    } else {
+        newWifiState = WAITING_CHAR_HEX;
+    }
+    if (newWifiState != wifiState) {
+        wifiState = newWifiState;
+        clearDrawWifi(u8g2);
+        u8g2_SetDrawColor(u8g2, DRAW_COLOR_WHITE);
+        u8g2_SetFont(u8g2, u8g2_font_unifont_t_symbols);
+        u8g2_DrawGlyph(u8g2, 110, 15, newWifiState);
     }
 }
 
@@ -85,13 +107,8 @@ void drawMoon(u8g2_t *u8g2) {
     u8g2_DrawDisc(u8g2, 30, 20, 18, U8G2_DRAW_ALL);
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_WHITE);
     u8g2_SetFont(u8g2, u8g2_font_unifont_t_symbols);
-    u8g2_DrawGlyph(u8g2, 78, 31, STAR_CHAR_HEX);
-    u8g2_DrawGlyph(u8g2, 108, 38, STAR_CHAR_HEX);
     u8g2_DrawGlyph(u8g2, 39, 10, STAR_CHAR_HEX);
     u8g2_DrawGlyph(u8g2, 28, 26, STAR_CHAR_HEX);
-    u8g2_DrawGlyph(u8g2, 60, 15, STAR_CHAR_HEX);
-    u8g2_DrawGlyph(u8g2, 71, 41, STAR_CHAR_HEX);
-    u8g2_DrawGlyph(u8g2, 95, 17, STAR_CHAR_HEX);
     u8g2_SendBuffer(u8g2);
 }
 
@@ -161,5 +178,10 @@ void animateSun(u8g2_t *u8g2, bool small) {
 
 void clearDraw(u8g2_t *u8g2) {
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_BLACK);
-    u8g2_DrawBox(u8g2, 0, 0, MAX_WIDTH, MAX_HEIGHT - HISTORY_MAX_HEIGHT);
+    u8g2_DrawBox(u8g2, 0, 0, 50, MAX_HEIGHT - HISTORY_MAX_HEIGHT);
+}
+
+void clearDrawWifi(u8g2_t *u8g2) {
+    u8g2_SetDrawColor(u8g2, DRAW_COLOR_BLACK);
+    u8g2_DrawBox(u8g2, 100, 0, 120, MAX_HEIGHT - HISTORY_MAX_HEIGHT);
 }
