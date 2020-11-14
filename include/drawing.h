@@ -11,6 +11,7 @@
 #define DRAW_COLOR_BLACK 0
 #define DRAW_COLOR_WHITE 1
 
+void taskDisplay(void *pvParameters);
 void drawHistoric(u8g2_t *u8g2, int newValue);
 void drawMoon(u8g2_t *u8g2);
 void drawSun(u8g2_t *u8g2);
