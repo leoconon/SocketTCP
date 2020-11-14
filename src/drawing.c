@@ -33,7 +33,7 @@ void taskDisplay(void *pvParameters) {
     bool haveToShowSun;
     
     loop {
-        xQueueReceive(bufferLuminosity, &readValue, pdMS_TO_TICKS(2000));
+        xQueueReceive(bufferNewLuminosity, &readValue, pdMS_TO_TICKS(2000));
         drawHistoric(&u8g2, readValue);
         haveToShowSun = readValue > MAX_NIGHT_LUMINOSITY;
         if (haveToShowSun != wasShowingSun || isFirstIteraction) {

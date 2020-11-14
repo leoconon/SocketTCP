@@ -1,4 +1,5 @@
 #include "socket.h"
+#include "global.h"
 
 #define PORT 3333
 
@@ -99,16 +100,26 @@ void do_retransmit(const int sock)
         } else if (len == 0) {
             ESP_LOGW(TAG, "Connection closed");
         } else {
-            rx_buffer[len] = 0; // Null-terminate whatever is received and treat it like a string
+            rx_buffer[len] = 0;
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
-
-            int to_write = len;
-            while (to_write > 0) {
-                int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
-                if (written < 0) {
-                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+            if (strcmp(rx_buffer, "GET") == 0) {
+                int element;
+                loop {
+                    xQueueReceive(bufferLuminosity, &element, 0);
+                    ESP_LOGI(TAG, "%d", element);
+                    int messagesWaiting = uxQueueMessagesWaiting(bufferLuminosity);
+                    if (messagesWaiting < 1) {
+                        break;
+                    }
                 }
-                to_write -= written;
+                int to_write = len;
+                while (to_write > 0) {
+                    int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
+                    if (written < 0) {
+                        ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    }
+                    to_write -= written;
+                }
             }
         }
     } while (len > 0);
