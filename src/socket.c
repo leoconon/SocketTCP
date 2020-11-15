@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "socket.h"
 #include "global.h"
 
@@ -104,17 +105,26 @@ void do_retransmit(const int sock)
             ESP_LOGI(TAG, "Received %d bytes: %s", len, rx_buffer);
             if (strcmp(rx_buffer, "GET") == 0) {
                 int element;
-                loop {
-                    xQueueReceive(bufferLuminosity, &element, 0);
-                    ESP_LOGI(TAG, "%d", element);
-                    int messagesWaiting = uxQueueMessagesWaiting(bufferLuminosity);
+                char jsonObjects[300] = "";
+                char json[500] = "";
+                for (int i = 0; i < DATA_BUFFER_SIZE; i++) {
+                    xQueueReceive(bufferLuminosityNotification, &element, 0);
+                    int messagesWaiting = uxQueueMessagesWaiting(bufferLuminosityNotification);
                     if (messagesWaiting < 1) {
+                        char buf[20] = "";
+                        strcat(jsonObjects, buf);
                         break;
+                    } else {
+                        char buf[20] = "";
+                        strcat(jsonObjects, buf);
                     }
                 }
-                int to_write = len;
+                sprintf(json, "[%s]", jsonObjects);
+                ESP_LOGI(TAG, "%s", json);
+                int jsonLen = strlen(json);
+                int to_write = jsonLen;
                 while (to_write > 0) {
-                    int written = send(sock, rx_buffer + (len - to_write), to_write, 0);
+                    int written = send(sock, json + (jsonLen - to_write), to_write, 0);
                     if (written < 0) {
                         ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                     }

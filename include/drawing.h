@@ -15,13 +15,5 @@
 #define DRAW_COLOR_WHITE 1
 
 void taskDisplay(void *pvParameters);
-void drawWifi(u8g2_t *u8g2);
-void drawHistoric(u8g2_t *u8g2, int newValue);
-void drawMoon(u8g2_t *u8g2);
-void drawSun(u8g2_t *u8g2);
-void animateSun(u8g2_t *u8g2, bool small);
-void clearDraw(u8g2_t *u8g2);
-void clearDrawWifi(u8g2_t *u8g2);
-void printValue(u8g2_t *u8g2, int value);
 
 #endif

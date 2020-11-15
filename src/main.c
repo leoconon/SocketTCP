@@ -27,7 +27,7 @@ void app_main() {
 
 void taskReadLum(void *pvParameters) {
     bufferNewLuminosity = xQueueCreate(1, sizeof(int));
-    bufferLuminosity = xQueueCreate(20, sizeof(int));
+    bufferLuminosityNotification = xQueueCreate(DATA_BUFFER_SIZE, sizeof(int));
     adc1_config_width(PIN_LUM);
     adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_0);
     int val, valHist;
@@ -35,7 +35,7 @@ void taskReadLum(void *pvParameters) {
         val = adc1_get_raw(PIN_LUM);
         valHist = adc1_get_raw(PIN_LUM);
         xQueueSend(bufferNewLuminosity, &val, pdMS_TO_TICKS(0));
-        xQueueSend(bufferLuminosity, &valHist, pdMS_TO_TICKS(0));
+        xQueueSend(bufferLuminosityNotification, &valHist, pdMS_TO_TICKS(0));
         delay(500);
     }
 }

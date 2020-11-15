@@ -7,6 +7,15 @@ int historic[MAX_WIDTH];
 u8g2_t u8g2;
 int wifiState = 0;
 
+bool drawWifi(u8g2_t *u8g2);
+void drawHistoric(u8g2_t *u8g2, int newValue);
+void drawMoon(u8g2_t *u8g2);
+void drawSun(u8g2_t *u8g2);
+void animateSun(u8g2_t *u8g2, bool small);
+void clearDraw(u8g2_t *u8g2);
+void clearDrawWifi(u8g2_t *u8g2);
+void printValue(u8g2_t *u8g2, int value);
+
 void taskDisplay(void *pvParameters) {
     u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
 	u8g2_esp32_hal.sda = PIN_SDA;
@@ -50,15 +59,15 @@ void taskDisplay(void *pvParameters) {
         }
         sunBigger = !sunBigger;
         printValue(&u8g2, readValue);
-        drawWifi(&u8g2);
+        isFirstIteraction = drawWifi(&u8g2);
         u8g2_SendBuffer(&u8g2);
-        isFirstIteraction = false;
     }
 }
 
-void drawWifi(u8g2_t *u8g2) {
+bool drawWifi(u8g2_t *u8g2) {
     EventBits_t flags = xEventGroupGetBits(wifiEventGroup);
     int newWifiState;
+    bool redraw = false;
     if (flags & WIFI_CONNECTED_BIT) {
         newWifiState = CONNECTED_CHAR_HEX;
     } else if (flags & WIFI_FAIL_BIT) {
@@ -68,11 +77,22 @@ void drawWifi(u8g2_t *u8g2) {
     }
     if (newWifiState != wifiState) {
         wifiState = newWifiState;
+        if (newWifiState == CONNECTED_CHAR_HEX) {
+            u8g2_ClearDisplay(u8g2);
+            u8g2_SetFont(u8g2, u8g2_font_6x10_mf);
+            u8g2_DrawUTF8(u8g2, 30, 26, wifiIp);
+            u8g2_SendBuffer(u8g2);
+            delay(5000);
+            u8g2_ClearDisplay(u8g2);
+            u8g2_SendBuffer(u8g2);
+            redraw = true;
+        }
         clearDrawWifi(u8g2);
         u8g2_SetDrawColor(u8g2, DRAW_COLOR_WHITE);
         u8g2_SetFont(u8g2, u8g2_font_unifont_t_symbols);
         u8g2_DrawGlyph(u8g2, 110, 15, newWifiState);
     }
+    return redraw;
 }
 
 void drawHistoric(u8g2_t *u8g2, int newValue) {
@@ -95,7 +115,7 @@ void drawHistoric(u8g2_t *u8g2, int newValue) {
 
 void printValue(u8g2_t *u8g2, int value) {
     char print[5];
-    sprintf(print, "%d", value);
+    sprintf(print, "%d   ", value);
     u8g2_SetFont(u8g2, u8g2_font_6x10_mf);
     u8g2_DrawUTF8(u8g2, 64, 26, print);
 }

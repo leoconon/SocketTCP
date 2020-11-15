@@ -70,7 +70,8 @@ void eventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void
         xEventGroupClearBits(wifiEventGroup, WIFI_CONNECTED_BIT);
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
-        ESP_LOGI(TAG, "Conectado! O IP atribuido é: " IPSTR, IP2STR(&event->ip_info.ip));
+        sprintf(wifiIp, IPSTR, IP2STR(&event->ip_info.ip));
+        ESP_LOGI(TAG, "Conectado! O IP atribuido é: %s", wifiIp);
         xEventGroupSetBits(wifiEventGroup, WIFI_CONNECTED_BIT);
         xEventGroupClearBits(wifiEventGroup, WIFI_FAIL_BIT);
     } else {
