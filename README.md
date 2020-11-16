@@ -15,6 +15,12 @@ leituras feitas e um ícone indicando o status da conexão wifi.
 
 Na conexão socket, ao receber o texto "GET", o ESP irá devolver as últimas 20 leituras realizadas e ainda não capturadas via socket no formato JSON.
 
+## Executando
+Para executar, é necessário através do menuconfig, configurar SSID e senha na sessão `Example Connection Configuration`. Após fazer build do projeto pode-se conectar com algum cliente de 
+socket TCP através do IP indicado na tela, na porta 3333.
+
+O pino associado ao sensor LDR está definido em `utils.h`.
+
 ## Código
 O código fonte do sistema está distribuído em módulos, ou seja, arquivos que representam as principais funcionalidades necessárias.
 

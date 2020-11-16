@@ -1,8 +1,8 @@
 #include <wifi.h>
 #include <global.h>
 
-#define WIFI_USER "Eliete"
-#define WIFI_PASS "#elisnon13"
+#define WIFI_USER CONFIG_EXAMPLE_WIFI_SSID
+#define WIFI_PASS CONFIG_EXAMPLE_WIFI_PASSWORD
 
 static const char *TAG = "wifi";
 
