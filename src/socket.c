@@ -8,8 +8,10 @@ static const char *TAG = "socket";
 
 void do_retransmit(const int sock);
 
-void tcp_server_task(void *pvParameters)
-{
+/**
+ * Task reponsável por fazer a conexão do SocketTCP.
+ */
+void tcp_server_task(void *pvParameters) {
     char addr_str[128];
     int addr_family = (int)pvParameters;
     int ip_protocol = 0;
@@ -89,8 +91,11 @@ void tcp_server_task(void *pvParameters)
     }
 }
 
-void do_retransmit(const int sock)
-{
+/**
+ * Função que captura os valores recebidos por uma transmissão socket e 
+ * devolve os dados do histórico de leituras no formato JSON.
+ */
+void do_retransmit(const int sock) {
     int len;
     char rx_buffer[128];
 

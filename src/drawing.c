@@ -16,6 +16,9 @@ void clearDraw(u8g2_t *u8g2);
 void clearDrawWifi(u8g2_t *u8g2);
 void printValue(u8g2_t *u8g2, int value);
 
+/**
+ * Tarefa principal do display
+ */
 void taskDisplay(void *pvParameters) {
     u8g2_esp32_hal_t u8g2_esp32_hal = U8G2_ESP32_HAL_DEFAULT;
 	u8g2_esp32_hal.sda = PIN_SDA;
@@ -64,6 +67,12 @@ void taskDisplay(void *pvParameters) {
     }
 }
 
+/**
+ * Desenha na tela o status da conexão wifi.
+ * Através do wifiEventGroup, essa função desenha na tela um "X" caso o wifi 
+ * esteja desconectado, um "check" se o wifi estiver conectado e uma ampulheta nos demais casos.
+ * Além disso, quando o wifi consegue uma conexão, escreve na tela o IP adquirido.
+ */
 bool drawWifi(u8g2_t *u8g2) {
     EventBits_t flags = xEventGroupGetBits(wifiEventGroup);
     int newWifiState;
@@ -95,6 +104,9 @@ bool drawWifi(u8g2_t *u8g2) {
     return redraw;
 }
 
+/**
+ * Desenha o gráfico de histórico.
+ */
 void drawHistoric(u8g2_t *u8g2, int newValue) {
     if (newValue > LUMINOSITY_MAX_VALUE) {
         newValue = LUMINOSITY_MAX_VALUE;
@@ -113,6 +125,9 @@ void drawHistoric(u8g2_t *u8g2, int newValue) {
     }
 }
 
+/**
+ * Escreve na tela o valor atual das leituras
+ */
 void printValue(u8g2_t *u8g2, int value) {
     char print[5];
     sprintf(print, "%d   ", value);
@@ -120,6 +135,9 @@ void printValue(u8g2_t *u8g2, int value) {
     u8g2_DrawUTF8(u8g2, 64, 26, print);
 }
 
+/**
+ * Desenha a lua
+ */
 void drawMoon(u8g2_t *u8g2) {
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_WHITE);
     u8g2_DrawDisc(u8g2, 23, 23, 18, U8G2_DRAW_ALL);
@@ -132,12 +150,19 @@ void drawMoon(u8g2_t *u8g2) {
     u8g2_SendBuffer(u8g2);
 }
 
+/**
+ * Desenha uma parte do sol, a ser complementado pela função 'animateSun'
+ */
 void drawSun(u8g2_t *u8g2) {
     //Circulo Central
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_WHITE);
     u8g2_DrawDisc(u8g2, 23, 23, 8, U8G2_DRAW_ALL);
 }
 
+/**
+ * Desenha as demais partes do sol, quando 'small' for verdadeiro irá desenhar os
+ * raios de sol menores, quando falso, maiores.
+ */
 void animateSun(u8g2_t *u8g2, bool small) {
     if (small) {
         u8g2_SetDrawColor(u8g2, DRAW_COLOR_BLACK);
@@ -196,11 +221,17 @@ void animateSun(u8g2_t *u8g2, bool small) {
     }
 }
 
+/**
+ * Apaga o desenho do sol e da lua
+ */
 void clearDraw(u8g2_t *u8g2) {
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_BLACK);
     u8g2_DrawBox(u8g2, 0, 0, 50, MAX_HEIGHT - HISTORY_MAX_HEIGHT);
 }
 
+/**
+ * Apaga o ícone do estado do wifi
+ */
 void clearDrawWifi(u8g2_t *u8g2) {
     u8g2_SetDrawColor(u8g2, DRAW_COLOR_BLACK);
     u8g2_DrawBox(u8g2, 100, 0, 120, MAX_HEIGHT - HISTORY_MAX_HEIGHT);

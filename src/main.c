@@ -25,6 +25,10 @@ void app_main() {
     xTaskCreate(tcp_server_task, "tcp_server", 4096, (void*)AF_INET, 5, NULL);
 }
 
+/**
+ * Task que faz a leitura dos dados de luminosidade e adiciona nas filas.
+ * A fila 'bufferNewLuminosity' é responsável por sincronizar a tarefa de escrita na tela.
+ */
 void taskReadLum(void *pvParameters) {
     bufferNewLuminosity = xQueueCreate(1, sizeof(int));
     bufferLuminosityNotification = xQueueCreate(DATA_BUFFER_SIZE, sizeof(int));

@@ -1,8 +1,8 @@
 #include <wifi.h>
 #include <global.h>
 
-#define WIFI_USER "NetVirtua 801"
-#define WIFI_PASS "sg969100"
+#define WIFI_USER "Eliete"
+#define WIFI_PASS "#elisnon13"
 
 static const char *TAG = "wifi";
 
