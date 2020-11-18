@@ -115,14 +115,16 @@ void do_retransmit(const int sock) {
                 for (int i = 0; i < DATA_BUFFER_SIZE; i++) {
                     xQueueReceive(bufferLuminosityNotification, &element, 0);
                     int messagesWaiting = uxQueueMessagesWaiting(bufferLuminosityNotification);
+                    char buf[20] = "";
                     if (messagesWaiting < 1) {
-                        char buf[20] = "";
+                        sprintf(buf, "{\"value\":%d}", element);
                         strcat(jsonObjects, buf);
                         break;
                     } else {
-                        char buf[20] = "";
+                        sprintf(buf, "{\"value\":%d},", element);
                         strcat(jsonObjects, buf);
                     }
+                    ESP_LOGI(TAG, "%s", jsonObjects);
                 }
                 sprintf(json, "[%s]", jsonObjects);
                 ESP_LOGI(TAG, "%s", json);
