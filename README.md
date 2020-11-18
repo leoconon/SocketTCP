@@ -15,6 +15,10 @@ leituras feitas e um ícone indicando o status da conexão wifi.
 
 Na conexão socket, ao receber o texto "GET", o ESP irá devolver as últimas 20 leituras realizadas e ainda não capturadas via socket no formato JSON.
 
+O vídeo abaixo demonstra o funcionamento do projeto (clique para abrir no YouTube):
+
+[![Projeto em funcionamento](https://img.youtube.com/vi/n06YQIkiF-g/0.jpg)](https://youtu.be/n06YQIkiF-g)
+
 ## Executando
 Para executar, é necessário através do menuconfig, configurar SSID e senha na sessão `Example Connection Configuration`. Após fazer build do projeto pode-se conectar com algum cliente de 
 socket TCP através do IP indicado na tela, na porta 3333.
